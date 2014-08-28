@@ -381,6 +381,52 @@ define(
                     expect(function () { locator.reload(); }).toThrow();
                 });
             });
+
+            describe('dispose method', function () {
+                it('should stop the object', function (done) {
+                    var locator = new Locator();
+                    locator.start();
+                    var redirect = jasmine.createSpy('redirect');
+                    locator.on('redirect', redirect);
+                    locator.dispose();
+                    location.hash = 'x';
+                    setTimeout(function () {
+                        expect(redirect).not.toHaveBeenCalled();
+                        location.hash = '';
+                        done();
+                    }, 0);
+                });
+
+                it('should dispose when not started', function () {
+                    var locator = new Locator();
+                    expect(function () { locator.dispose(); }).not.toThrow();
+                });
+
+                it('should dispose when stopped', function () {
+                    var locator = new Locator();
+                    locator.start();
+                    locator.stop();
+                    expect(function () { locator.dispose(); }).not.toThrow();
+                });
+
+                it('should dispose when paused', function () {
+                    var locator = new Locator();
+                    locator.start();
+                    locator.pause();
+                    expect(function () { locator.dispose(); }).not.toThrow();
+                });
+
+                it('should throw on all public methods', function () {
+                    var locator = new Locator();
+                    locator.dispose();
+                    expect(function () { locator.start(); }).toThrow();
+                    expect(function () { locator.pause(); }).toThrow();
+                    expect(function () { locator.stop(); }).toThrow();
+                    expect(function () { locator.resume(); }).toThrow();
+                    expect(function () { locator.redirect('x'); }).toThrow();
+                    expect(function () { locator.reload(); }).toThrow();
+                });
+            });
         });
     }
 );

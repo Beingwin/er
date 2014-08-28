@@ -9,7 +9,8 @@ define(
         var STATE = {
             STARTED: 'started',
             STOPPED: 'stopped',
-            PAUSED: 'paused'
+            PAUSED: 'paused',
+            DISPOSED: 'disposed'
         };
 
         /**
@@ -92,6 +93,10 @@ define(
          * @fires start
          */
         exports.start = function () {
+            if (this.state === STATE.DISPOSED) {
+                throw new Error('This locator is disposed');
+            }
+
             if (this.state === STATE.STARTED) {
                 return;
             }
@@ -126,6 +131,10 @@ define(
          * @fires stop
          */
         exports.stop = function () {
+            if (this.state === STATE.DISPOSED) {
+                throw new Error('This locator is disposed');
+            }
+
             if (this.state === STATE.STOPPED) {
                 return;
             }
@@ -149,6 +158,10 @@ define(
          * @fires resume
          */
         exports.resume = function () {
+            if (this.state === STATE.DISPOSED) {
+                throw new Error('This locator is disposed');
+            }
+
             if (this.state === STATE.STARTED || this.state === STATE.STOPPED) {
                 return;
             }
@@ -173,6 +186,10 @@ define(
          * @fires pause
          */
         exports.pause = function () {
+            if (this.state === STATE.DISPOSED) {
+                throw new Error('This locator is disposed');
+            }
+
             if (this.state === STATE.PAUSED || this.state === STATE.STOPPED) {
                 return;
             }
@@ -326,6 +343,10 @@ define(
          * @return {boolean} 如果确实执行了重定向逻辑则返回`true`，否则返回`false`
          */
         exports.redirect = function (url, options) {
+            if (this.state === STATE.DISPOSED) {
+                throw new Error('This locator is disposed');
+            }
+
             url = url.toString();
             options = options || {};
 
@@ -369,11 +390,35 @@ define(
          * @method Locator#.reload
          */
         exports.reload = function () {
+            if (this.state === STATE.DISPOSED) {
+                throw new Error('This locator is disposed');
+            }
+
             if (this.currentLocation === null) {
                 throw new Error('There is currently no location for reload');
             }
 
             this.redirect(this.currentLocation, { force: true });
+        };
+
+        /**
+         * 销毁当前对象
+         *
+         * @method Locator#.dispose
+         */
+        exports.dispose = function () {
+            // 允许重复`dispose`而不出异常
+            if (this.state === STATE.DISPOSED) {
+                return;
+            }
+
+            if (this.state !== STATE.STOPPED) {
+                this.stop();
+            }
+
+            this.destroyEvents();
+            this.currentLocation = null;
+            this.state = STATE.DISPOSED;
         };
 
         var Locator = require('eoo').create(require('mini-event/EventTarget'), exports);
