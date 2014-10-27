@@ -7,8 +7,7 @@
             "email": "otakustay@gmail.com"
         }
     ],
-    "dependencies": {
-    },
+    "dependencies": {},
     "main": "main",
     "description": "ER是一个富浏览器端web应用的框架，适用于并能很方便地构建一个整站式的AJAX web应用。",
     "homepage": "https://github.com/ecomfe/er",
@@ -25,7 +24,7 @@
             "promise": "1.x",
             "mini-event": "1.x",
             "etpl": "2.x",
-            "underscore": "1.6.x"
+            "underscore": "1.x"
         }
     }
 }
