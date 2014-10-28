@@ -122,15 +122,10 @@ define(
                 throw new Error('This DataLoader is disposed');
             }
 
-            try {
-                var config = this.getConfig();
-                // 为了控制流程简便，同时考虑到无论成功与否最后的对象结构是相似的，所以加载单个数据统一只会成功不会失败，
-                // 通过`success`属性来表示真实的加载情况，最后在`reportLoadResult`中统一判断来分流`Promise`的结果
-                return this.loadByConfig(config).then(u.bind(this.reportLoadResult, this));
-            }
-            catch (ex) {
-                return Promise.reject(ex);
-            }
+            var config = this.getConfig();
+            // 为了控制流程简便，同时考虑到无论成功与否最后的对象结构是相似的，所以加载单个数据统一只会成功不会失败，
+            // 通过`success`属性来表示真实的加载情况，最后在`reportLoadResult`中统一判断来分流`Promise`的结果
+            return this.loadByConfig(config).then(u.bind(this.reportLoadResult, this));
         };
 
         /**
@@ -427,7 +422,9 @@ define(
          * @method DataLoader#.dispose
          */
         exports.dispose = function () {
-            u.each(this.pendingWorkers, this.destroyPendingWorker, this);
+            while (this.pendingWorkers.length) {
+                this.destroyPendingWorker(this.pendingWorkers[0]);
+            }
 
             this.pendingWorkers = null;
             this.store = null;

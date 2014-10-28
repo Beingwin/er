@@ -218,6 +218,14 @@ define(
                         done();
                     });
                 });
+
+                it('should fail if data items are invalid', function (done) {
+                    var loader = new DataLoader();
+                    var store = new Model();
+                    loader.setStore(store);
+                    loader.put({x: null});
+                    loader.load().then(null, done);
+                });
             });
 
             describe('dispose method', function () {

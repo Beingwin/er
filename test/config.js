@@ -46,14 +46,14 @@ module.exports = {
     // - Safari (only Mac; has to be installed with `npm install karma-safari-launcher`)
     // - PhantomJS
     // - IE (only Windows; has to be installed with `npm install karma-ie-launcher`)
-    browsers: ['Chrome'],
     // browsers: ['Firefox'],
     // browsers: ['Safari'],
-    // browsers: ['PhantomJS'],
+    // browsers: ['Chrome'],
+    browsers: ['PhantomJS'],
 
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    // singleRun: true
-    singleRun: false
+    singleRun: true
+    // singleRun: false
 };

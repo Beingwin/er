@@ -426,6 +426,12 @@ define(
                     expect(function () { locator.redirect('x'); }).toThrow();
                     expect(function () { locator.reload(); }).toThrow();
                 });
+
+                it('should be safe to call multiple times', function () {
+                    var locator = new Locator();
+                    locator.dispose();
+                    expect(function () { locator.dispose(); }).not.toThrow();
+                });
             });
         });
     }
